@@ -124,6 +124,7 @@ typedef void (^PINRemoteImageManagerDataCompletion)(NSData *data, NSError *error
 
 @property (nonatomic, strong) id<PINRemoteImageCaching> cache;
 @property (nonatomic, strong) PINURLSessionManager *sessionManager;
+@property (nonatomic, assign) NSURLRequestCachePolicy requestCachePolicy;
 @property (nonatomic, assign) NSTimeInterval timeout;
 @property (nonatomic, strong) NSMutableDictionary <NSString *, __kindof PINRemoteImageTask *> *tasks;
 @property (nonatomic, strong) NSHashTable <NSUUID *> *canceledTasks;
@@ -209,6 +210,9 @@ static dispatch_once_t sharedDispatchToken;
         
         if (!configuration) {
             configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+            _requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+        } else {
+            _requestCachePolicy = NSURLRequestUseProtocolCachePolicy;
         }
         _callbackQueue = dispatch_queue_create("PINRemoteImageManagerCallbackQueue", DISPATCH_QUEUE_CONCURRENT);
         _lock = [[PINRemoteLock alloc] initWithName:@"PINRemoteImageManager"];
@@ -889,7 +893,7 @@ static dispatch_once_t sharedDispatchToken;
                                   completion:(PINRemoteImageManagerDataCompletion)completion
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
-                                             cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                             cachePolicy:self.requestCachePolicy
                                          timeoutInterval:self.timeout];
     [NSURLProtocol setProperty:key forKey:PINRemoteImageCacheKey inRequest:request];
     

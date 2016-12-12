@@ -200,6 +200,7 @@ static dispatch_once_t sharedDispatchToken;
         
         if (!configuration) {
             configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+            configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
         }
         _callbackQueue = dispatch_queue_create("PINRemoteImageManagerCallbackQueue", DISPATCH_QUEUE_CONCURRENT);
         _lock = [[PINRemoteLock alloc] initWithName:@"PINRemoteImageManager"];
@@ -910,7 +911,7 @@ static dispatch_once_t sharedDispatchToken;
                                    completion:(PINRemoteImageManagerDataCompletion)completion
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
-                                             cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                             cachePolicy:self.sessionManager.sessionConfiguration.requestCachePolicy
                                          timeoutInterval:self.timeout];
     if (self.httpHeaderFields.count > 0) {
         request.allHTTPHeaderFields = [self.httpHeaderFields copy];

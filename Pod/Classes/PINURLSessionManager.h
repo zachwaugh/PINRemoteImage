@@ -31,5 +31,6 @@ extern NSString * __nonnull const PINURLErrorDomain;
 - (void)invalidateSessionAndCancelTasks;
 
 @property (atomic, weak, nullable) id <PINURLSessionManagerDelegate> delegate;
+@property (nonatomic, readonly, nonnull) NSURLSessionConfiguration *sessionConfiguration;
 
 @end

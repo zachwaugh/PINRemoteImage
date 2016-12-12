@@ -39,6 +39,10 @@ NSString * const PINURLErrorDomain = @"PINURLErrorDomain";
     return self;
 }
 
+- (NSURLSessionConfiguration *)sessionConfiguration {
+    return self.session.configuration;
+}
+
 - (void)invalidateSessionAndCancelTasks
 {
     [self lock];
